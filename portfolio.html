@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishmeet | Portfolio</title>
+    <!-- Initial favicon fallback -->
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/96376246?v=4">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Global Styles -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #050505; /* Default Dark Mode */
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* Custom Animations */
+        @keyframes spin-slow {
+          from { transform: rotate(0deg) scale(1.1); }
+          to { transform: rotate(360deg) scale(1.1); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 12s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-fade-in-down {
+          animation: fadeInDown 0.8s ease-out;
+        }
+        
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        /* Typewriter Cursor */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #15803d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #166534;
+        }
+        
+        /* Smooth transitions for theme switching */
+        .theme-transition {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+
+        /* Vignette for depth */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.5);
+            pointer-events: none;
+            z-index: -5;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Icon Components (Inline Replacements for lucide-react) ---
+        const IconBase = ({ children, size = 24, className = "", ...props }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+                {...props}
+            >
+                {children}
+            </svg>
+        );
+
+        const Github = (props) => <IconBase {...props}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></IconBase>;
+        const Linkedin = (props) => <IconBase {...props}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></IconBase>;
+        const Twitter = (props) => <IconBase {...props}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-12.7 12.5S.2 5.3 4.1 2c1.1 6.1 5.7 6.4 8.3 4.3 0-1.2.6-2.5 1.6-3.3 1.7-1.3 5 0 5 0z"/></IconBase>;
+        const Mail = (props) => <IconBase {...props}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></IconBase>;
+        const Shield = (props) => <IconBase {...props}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></IconBase>;
+        const Terminal = (props) => <IconBase {...props}><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></IconBase>;
+        const Cpu = (props) => <IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 14h3"/><path d="M1 9h3"/><path d="M1 14h3"/></IconBase>;
+        const Cloud = (props) => <IconBase {...props}><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M19 19h.5c1.657 0 3-1.343 3-3 0-2.206-1.794-4-4-4-.3 0-.586.035-.86.105C17.07 9.474 15.225 8 13 8c-3.15 0-5.74 2.41-5.965 5.5C4.265 13.9 2 16.142 2 19h3"/></IconBase>;
+        const Lock = (props) => <IconBase {...props}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></IconBase>;
+        const Eye = (props) => <IconBase {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></IconBase>;
+        const EyeOff = (props) => <IconBase {...props}><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></IconBase>;
+        const RefreshCw = (props) => <IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></IconBase>;
+        const Copy = (props) => <IconBase {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></IconBase>;
+        const Check = (props) => <IconBase {...props}><polyline points="20 6 9 17 4 12"/></IconBase>;
+        const Server = (props) => <IconBase {...props}><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></IconBase>;
+        const Network = (props) => <IconBase {...props}><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></IconBase>;
+        const Wifi = (props) => <IconBase {...props}><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></IconBase>;
+        const Moon = (props) => <IconBase {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></IconBase>;
+        const Sun = (props) => <IconBase {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></IconBase>;
+
+
+        /**
+         * Matrix Rain Canvas Component
+         * Renders the falling code effect in the background, adapts to theme
+         */
+        const MatrixRain = ({ theme }) => {
+          const canvasRef = useRef(null);
+
+          useEffect(() => {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            const resizeCanvas = () => {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+            };
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Matrix characters (katakana + latin)
+            const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const charArray = chars.split('');
+            
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            
+            // Array to track y-coordinate of each column
+            const drops = [];
+            for (let i = 0; i < columns; i++) {
+              drops[i] = 1;
+            }
+
+            const draw = () => {
+              // Adjust fade for trailing effect based on theme
+              // Light mode needs a slightly cleaner trail to avoid looking muddy
+              if (theme === 'light') {
+                  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; 
+              } else {
+                  ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+              }
+              
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              
+              ctx.font = `${fontSize}px monospace`;
+              
+              for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                
+                // Color Logic
+                if (theme === 'light') {
+                    // Light Mode: Black text, Green glint
+                    if (Math.random() > 0.98) {
+                        ctx.fillStyle = '#15803d'; // Green Glint
+                    } else {
+                        ctx.fillStyle = '#000000'; // Black text
+                    }
+                } else {
+                    // Dark Mode: Bright Green text, White glint
+                    if (Math.random() > 0.98) {
+                        ctx.fillStyle = '#FFF'; // Glint
+                    } else {
+                        ctx.fillStyle = '#00FF41'; // Matrix Green
+                    }
+                }
+
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                // Reset drop to top randomly
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                  drops[i] = 0;
+                }
+                
+                drops[i]++;
+              }
+            };
+
+            const interval = setInterval(draw, 33);
+            return () => {
+              clearInterval(interval);
+              window.removeEventListener('resize', resizeCanvas);
+            };
+          }, [theme]); // Re-run effect when theme changes
+
+          return (
+            <canvas 
+              ref={canvasRef} 
+              className="fixed top-0 left-0 w-full h-full -z-10 transition-opacity duration-1000"
+              style={{ opacity: theme === 'light' ? 0.25 : 0.4 }}
+            />
+          );
+        };
+
+        /**
+         * Typewriter Text Component
+         * Animates text character by character
+         */
+        const TypewriterText = ({ text, className }) => {
+            const [displayText, setDisplayText] = useState('');
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            useEffect(() => {
+                if (currentIndex < text.length) {
+                    const timeout = setTimeout(() => {
+                        setDisplayText(prev => prev + text[currentIndex]);
+                        setCurrentIndex(prev => prev + 1);
+                    }, 50); // Speed of typing
+                    return () => clearTimeout(timeout);
+                }
+            }, [currentIndex, text]);
+
+            return <span className={`${className} typing-cursor`}>{displayText}</span>;
+        };
+
+        /**
+         * Glitch Text Component
+         * Creates a cyberpunk text glitch effect on hover/load
+         */
+        const GlitchText = ({ text, theme }) => {
+          return (
+            <div className="relative inline-block group">
+              <span className="relative z-10">{text}</span>
+              <span className={`absolute top-0 left-0 -z-10 w-full h-full ${theme === 'light' ? 'text-green-600' : 'text-green-500'} opacity-0 group-hover:opacity-70 group-hover:translate-x-[2px] transition-all duration-100 select-none animate-pulse`}>
+                {text}
+              </span>
+              <span className="absolute top-0 left-0 -z-10 w-full h-full text-purple-500 opacity-0 group-hover:opacity-70 group-hover:-translate-x-[2px] transition-all duration-100 select-none animate-pulse delay-75">
+                {text}
+              </span>
+            </div>
+          );
+        };
+
+        /**
+         * Password Generator Tool
+         * Replicates the functional tool from the design image
+         */
+        const PasswordGenerator = ({ theme }) => {
+          const [password, setPassword] = useState('');
+          const [length, setLength] = useState(16);
+          const [includeSymbols, setIncludeSymbols] = useState(true);
+          const [includeNumbers, setIncludeNumbers] = useState(true);
+          const [copied, setCopied] = useState(false);
+          const [showPassword, setShowPassword] = useState(true);
+
+          const generatePassword = () => {
+            let charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (includeNumbers) charset += '0123456789';
+            if (includeSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let newPassword = '';
+            for (let i = 0; i < length; i++) {
+              newPassword += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            setPassword(newPassword);
+            setCopied(false);
+          };
+
+          useEffect(() => {
+            generatePassword();
+          }, []);
+
+          const copyToClipboard = () => {
+            navigator.clipboard.writeText(password);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          };
+
+          const cardBg = theme === 'light' 
+            ? 'bg-white/80 border-gray-200 shadow-lg shadow-green-900/5' 
+            : 'bg-gray-900/80 border-gray-700 shadow-2xl shadow-green-900/20';
+            
+          const inputBg = theme === 'light' ? 'bg-gray-50 border-gray-200 text-green-700' : 'bg-black/50 border-gray-700 text-green-400';
+          const buttonHover = theme === 'light' ? 'hover:text-green-700' : 'hover:text-white';
+
+          return (
+            <div className={`w-full max-w-md mx-auto backdrop-blur-md border rounded-xl overflow-hidden mt-8 mb-12 transform transition-all hover:scale-[1.02] duration-300 theme-transition ${cardBg}`}>
+              <div className="bg-gradient-to-r from-green-600 to-emerald-800 p-4 text-center">
+                <h3 className="text-white font-bold text-lg tracking-wider">SECURE GEN</h3>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <label className={`text-xs uppercase tracking-widest font-semibold flex items-center gap-2 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
+                    <Shield size={14} className="text-green-500" />
+                    Generated Password
+                  </label>
+                  <div className="relative group">
+                    <input 
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      readOnly
+                      className={`w-full border font-mono text-lg p-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors ${inputBg}`}
+                    />
+                    <button 
+                      onClick={() => setShowPassword(!showPassword)}
+                      className={`absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 transition-colors ${buttonHover}`}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                    <button 
+                      onClick={copyToClipboard}
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors ${theme === 'light' ? 'hover:text-green-600' : 'hover:text-green-400'}`}
+                      title="Copy to clipboard"
+                    >
+                      {copied ? <Check size={18} className="text-green-500" /> : <Copy size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className={`flex justify-between text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                    <span>Length: {length}</span>
+                    <span>Strength: <span className="text-green-500">Strong</span></span>
+                  </div>
+                  <input 
+                    type="range" 
+                    min="8" 
+                    max="32" 
+                    value={length} 
+                    onChange={(e) => setLength(parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+                  />
+                  
+                  <div className="flex justify-between gap-4">
+                    <button 
+                      onClick={() => setIncludeSymbols(!includeSymbols)}
+                      className={`flex-1 py-2 px-3 rounded text-sm border theme-transition ${
+                        includeSymbols 
+                          ? 'bg-green-900/30 border-green-600 text-green-500 font-semibold' 
+                          : `${theme === 'light' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-transparent border-gray-700 text-gray-500'}`
+                      }`}
+                    >
+                      #&% Symbols
+                    </button>
+                    <button 
+                      onClick={() => setIncludeNumbers(!includeNumbers)}
+                      className={`flex-1 py-2 px-3 rounded text-sm border theme-transition ${
+                        includeNumbers 
+                          ? 'bg-green-900/30 border-green-600 text-green-500 font-semibold' 
+                          : `${theme === 'light' ? 'bg-gray-50 border-gray-200 text-gray-500' : 'bg-transparent border-gray-700 text-gray-500'}`
+                      }`}
+                    >
+                      123 Numbers
+                    </button>
+                  </div>
+
+                  <button 
+                    onClick={generatePassword}
+                    className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-600/20 active:scale-95"
+                  >
+                    <RefreshCw size={18} /> Generate Secure Key
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        const SectionTitle = ({ icon: Icon, title, theme }) => (
+          <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 border-b pb-2 ${theme === 'light' ? 'text-gray-800 border-gray-200' : 'text-white border-gray-800'}`}>
+            <Icon className="text-green-500" />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-700">
+              {title}
+            </span>
+          </h2>
+        );
+
+        function Portfolio() {
+          const [activeTab, setActiveTab] = useState('about');
+          const [theme, setTheme] = useState('dark');
+
+          const toggleTheme = () => {
+            setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+          };
+
+          // Update body background color when theme changes
+          useEffect(() => {
+            document.body.style.backgroundColor = theme === 'light' ? '#f3f4f6' : '#050505';
+          }, [theme]);
+
+          // Set Circular Favicon Logic
+          useEffect(() => {
+            const setCircularFavicon = (imageUrl) => {
+              const canvas = document.createElement('canvas');
+              canvas.width = 64;
+              canvas.height = 64;
+              const ctx = canvas.getContext('2d');
+              const img = new Image();
+              img.crossOrigin = "Anonymous"; // Crucial for CORS images
+              img.src = imageUrl;
+              img.onload = () => {
+                ctx.beginPath();
+                ctx.arc(32, 32, 32, 0, 2 * Math.PI);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(img, 0, 0, 64, 64);
+                
+                // Remove existing icon
+                const existingLink = document.querySelector("link[rel*='icon']");
+                if (existingLink) {
+                    document.head.removeChild(existingLink);
+                }
+
+                // Add new circular icon
+                const link = document.createElement('link');
+                link.type = 'image/x-icon';
+                link.rel = 'icon';
+                link.href = canvas.toDataURL();
+                document.head.appendChild(link);
+              };
+            };
+            
+            // Call the function with your image URL
+            setCircularFavicon("https://avatars.githubusercontent.com/u/96376246?v=4");
+          }, []);
+
+          // Base classes derived from theme
+          const textPrimary = theme === 'light' ? 'text-gray-800' : 'text-gray-300';
+          const textSecondary = theme === 'light' ? 'text-gray-600' : 'text-gray-400';
+          const containerBg = theme === 'light' ? 'bg-white/70 border-gray-200 shadow-xl' : 'bg-gray-900/40 border-gray-800 shadow-xl';
+          const bodyBg = 'bg-transparent'; 
+
+          return (
+            <div className={`min-h-screen font-sans selection:bg-green-500 selection:text-white overflow-x-hidden theme-transition ${bodyBg} ${textPrimary}`}>
+              <div className="vignette"></div>
+              <MatrixRain theme={theme} />
+              
+              <div className="relative z-10 container mx-auto px-4 py-12 max-w-5xl">
+                
+                {/* Theme Toggle Button */}
+                <div className="absolute top-6 right-6 z-50">
+                    <button 
+                        onClick={toggleTheme}
+                        className={`p-2 rounded-full border transition-all duration-300 ${theme === 'light' ? 'bg-white border-gray-200 text-orange-500 shadow-md' : 'bg-gray-800 border-gray-700 text-yellow-400 shadow-lg'}`}
+                        title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+                    >
+                        {theme === 'light' ? <Moon size={20} className="text-gray-600" /> : <Sun size={20} />}
+                    </button>
+                </div>
+
+                {/* Header Profile Section */}
+                <div className="flex flex-col items-center text-center mb-16 animate-fade-in-down">
+                  <div className="relative mb-6 group cursor-pointer animate-float">
+                    <div className={`w-32 h-32 rounded-full border-2 border-green-500 p-1 relative z-10 overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.3)] group-hover:shadow-[0_0_50px_rgba(0,255,65,0.5)] transition-all duration-500 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
+                       <img 
+                         src="https://avatars.githubusercontent.com/u/96376246?v=4" 
+                         alt="Ishmeet Singh" 
+                         className="w-full h-full object-cover rounded-full"
+                       />
+                    </div>
+                    {/* Spinning ring effect */}
+                    <div className="absolute top-0 left-0 w-full h-full rounded-full border border-dashed border-green-500/50 animate-spin-slow scale-110 pointer-events-none"></div>
+                  </div>
+                  
+                  <h1 className="text-5xl md:text-6xl font-bold mb-2 tracking-tight">
+                    <GlitchText text="Ishmeet Singh" theme={theme} />
+                  </h1>
+                  
+                  <p className={`font-mono text-sm md:text-base mb-6 tracking-widest uppercase ${theme === 'light' ? 'text-green-700' : 'text-green-400'}`}>
+                    <TypewriterText text="Cybersecurity Student" className="font-bold" /> <span className={textSecondary}>|</span> Offensive Security & Cloud Learner
+                  </p>
+
+                  {/* Social Links */}
+                  <div className="flex gap-6 mb-8">
+                    <a href="https://github.com/ishmweet" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-green-600 hover:scale-110 transition-all duration-300`}><Github size={24} /></a>
+                    <a href="https://www.linkedin.com/in/ishmeet-singh-2a4029378/" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-blue-500 hover:scale-110 transition-all duration-300`}><Linkedin size={24} /></a>
+                  </div>
+
+                  {/* Nav Tabs */}
+                  <div className={`flex flex-wrap justify-center gap-2 mb-8 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'}`}>
+                    {['about', 'skills', 'tools'].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 capitalize ${
+                          activeTab === tab 
+                          ? 'bg-green-600 text-white font-bold shadow-lg shadow-green-500/30' 
+                          : `${textSecondary} hover:bg-gray-500/10`
+                        }`}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Main Content Area */}
+                <div className="grid md:grid-cols-3 gap-8 items-start">
+                  
+                  {/* Left Column: Dynamic Content based on tabs */}
+                  <div className="md:col-span-2 space-y-8 min-h-[500px]">
+                    
+                    {activeTab === 'about' && (
+                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition ${containerBg}`}>
+                        <SectionTitle icon={Terminal} title="The Origin Story" theme={theme} />
+                        <div className={`space-y-6 leading-relaxed ${textPrimary}`}>
+                          <p>
+                            <span className="text-green-500 font-bold text-xl float-left mr-2 mt-[-6px]">"</span>
+                            Cybersecurity was not just a topic that appeared suddenly in front of me. It began as a personal curiosity back in Class 10, when I first started exploring Linux. My journey started with Ubuntu, then I started to get to know about more distros like Mint, Arch, BlackArch, Kali Linux, Garuda Linux, Parrot OS, Manjaro, Zorin OS and other debian based ditros. I tried them all, fascinated by how each system worked.
+                          </p>
+                          <p>
+                            That was when I was introduced to Linux terminals. I found them very cool at first sight because they were so powerful—giving me direct control over the system. Driven by curiosity, I started experimenting, learning about Remote Access Trojans (RATs), keyloggers, phishing techniques, using basic brute force tools, and exploring webcam hacks. Although I understood very little about the deeper mechanics back then, that thrill of interacting with technology directly sparked a passion that eventually grew into a career direction.
+                          </p>
+                          <p>
+                            The problem-solving aspect of cybersecurity excites me. I enjoy understanding how systems communicate, breaking down complex architectures and identifying what makes them vulnerable or resilient.
+                          </p>
+                          <div className={`border-l-4 border-green-500 pl-4 py-2 italic my-6 ${theme === 'light' ? 'bg-green-50 text-gray-700' : 'bg-green-900/10 text-gray-400'}`}>
+                            Today, as a cybersecurity student, I am working towards developing a solid understanding of how systems operate, how data moves, and how attackers identify weaknesses.
+                          </div>
+                          <p>
+                            Cybersecurity is not just about "hacking." It is a discipline that combines engineering, defensive strategy, system design, authentication, automation and ethical responsibility. The more I learn, the more I understand how deeply cybersecurity is integrated with modern technology.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'skills' && (
+                      <div className="space-y-6 animate-fade-in">
+                        {/* Currently Exploring */}
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition ${containerBg}`}>
+                          <SectionTitle icon={Network} title="Currently Exploring" theme={theme} />
+                          <ul className="space-y-3">
+                            {[
+                              "Linux administration and CLI workflows",
+                              "Networking fundamentals & subnetting",
+                              "Python scripting for security automation",
+                              "Web & network pentesting labs (TryHackMe / PortSwigger)",
+                              "Packet analysis using Wireshark",
+                              "Basic knowledge of C programming"
+                            ].map((item, i) => (
+                              <li key={i} className="flex items-start gap-3 group">
+                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-500 group-hover:scale-150 transition-transform"/>
+                                <span className={`transition-colors ${theme === 'light' ? 'group-hover:text-green-700' : 'group-hover:text-green-300'}`}>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Interests */}
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition ${containerBg}`}>
+                          <SectionTitle icon={Cloud} title="Core Interests" theme={theme} />
+                          <div className="grid gap-3">
+                            {[
+                              { text: "Offensive security & red-team methodology", color: "text-red-500" },
+                              { text: "Cloud security (AWS VPC, IAM, segmentation)", color: "text-orange-500" },
+                              { text: "Identity security & access hardening", color: "text-blue-500" },
+                              { text: "Security engineering & tooling", color: "text-purple-500" },
+                              { text: "OSINT and operational security", color: "text-green-600" }
+                            ].map((item, i) => (
+                              <div key={i} className={`p-3 rounded-lg border flex items-center gap-3 transition-all cursor-pointer hover:shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:-translate-y-1 ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-400' : 'bg-black/40 border-gray-800 hover:border-green-500'}`}>
+                                <Shield size={16} className={item.color} />
+                                <span>{item.text}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'tools' && (
+                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition ${containerBg}`}>
+                        <SectionTitle icon={Cpu} title="Tech Arsenal" theme={theme} />
+                        
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          {[
+                            { name: "Linux", icon: Terminal, color: "text-green-500" },
+                            { name: "Python", icon: Server, color: "text-blue-500" },
+                            { name: "Wireshark", icon: Wifi, color: "text-purple-500" },
+                            { name: "Nmap", icon: Network, color: "text-orange-500" },
+                            { name: "Burp Suite", icon: Check, color: "text-orange-500" },
+                            { name: "AWS", icon: Cloud, color: "text-orange-500" },
+                          ].map((tool, i) => (
+                            <div key={i} className={`flex flex-col items-center justify-center p-6 rounded-xl border transition-all duration-300 group hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:-translate-y-1 ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-500 hover:bg-green-50' : 'bg-black/40 border-gray-800 hover:border-green-500 hover:bg-green-900/10'}`}>
+                              <tool.icon size={32} className={`mb-3 transition-colors ${theme === 'light' ? 'text-gray-400 group-hover:text-green-600' : 'text-gray-500 group-hover:text-green-400'}`} />
+                              <span className="font-mono font-bold">{tool.name}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className={`mt-8 p-4 border rounded-lg flex gap-3 ${theme === 'light' ? 'bg-yellow-50 border-yellow-200' : 'bg-yellow-900/10 border-yellow-700/30'}`}>
+                          <Lock className="text-yellow-500 shrink-0" />
+                          <p className={`text-sm ${theme === 'light' ? 'text-yellow-800' : 'text-yellow-200/80'}`}>
+                            Always learning new tools. The most important tool is the mindset, but having the right scripts helps.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+
+                  {/* Right Column: Sticky Sidebar with Tools */}
+                  <div className="md:col-span-1">
+                    <div className="sticky top-8 space-y-6">
+                      
+                      {/* Featured Project / Tool */}
+                      <div className="animate-fade-in-up delay-100">
+                        <PasswordGenerator theme={theme} />
+                      </div>
+
+                      {/* Quick Contact Card */}
+                      <div className={`p-6 rounded-2xl border shadow-xl theme-transition ${theme === 'light' ? 'bg-gradient-to-br from-white to-gray-50 border-gray-200' : 'bg-gradient-to-br from-gray-900 to-black border-gray-800'}`}>
+                        <h3 className={`font-bold mb-4 flex items-center gap-2 ${textPrimary}`}>
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          Status: Online
+                        </h3>
+                        <div className="space-y-4 text-sm">
+                          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer group ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200' : 'bg-gray-800/50 hover:bg-gray-800'}`}>
+                            <span className={textSecondary}>Email</span>
+                            <span className={`transition-colors ${theme === 'light' ? 'text-green-600 font-medium' : 'text-green-400 group-hover:text-white'}`}>ishmeet.cybersec@...</span>
+                          </div>
+                          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors cursor-pointer group ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200' : 'bg-gray-800/50 hover:bg-gray-800'}`}>
+                            <span className={textSecondary}>Location</span>
+                            <span className={`transition-colors ${theme === 'light' ? 'text-green-600 font-medium' : 'text-green-400 group-hover:text-white'}`}>India</span>
+                          </div>
+                          <button 
+                            onClick={() => window.location.href = 'mailto:ishmeet.cybersec@gmail.com'}
+                            className={`w-full mt-2 py-2 border rounded-lg transition-all uppercase text-xs font-bold tracking-widest ${theme === 'light' ? 'border-green-600 text-green-700 hover:bg-green-600 hover:text-white' : 'border-green-600 text-green-500 hover:bg-green-600 hover:text-white'}`}
+                          >
+                            Initiate Contact
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Footer */}
+                <footer className={`mt-20 text-center text-sm border-t pt-8 theme-transition ${theme === 'light' ? 'text-gray-500 border-gray-200' : 'text-gray-600 border-gray-900'}`}>
+                  <p>© {new Date().getFullYear()} Ishmeet. All systems operational.</p>
+                  <p className="mt-2 font-mono text-xs opacity-50">Designed with React & Tailwind</p>
+                </footer>
+
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Portfolio />);
+    </script>
+</body>
+</html>
