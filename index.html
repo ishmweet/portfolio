@@ -102,13 +102,13 @@
             animation: tabContentEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        /* Stagger Delays */
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
-        .delay-500 { animation-delay: 500ms; }
-        .delay-700 { animation-delay: 700ms; }
+        /* Stagger Delays - Increased for smoother feel */
+        .delay-100 { animation-delay: 200ms; }
+        .delay-200 { animation-delay: 400ms; }
+        .delay-300 { animation-delay: 600ms; }
+        .delay-400 { animation-delay: 800ms; }
+        .delay-500 { animation-delay: 1000ms; }
+        .delay-700 { animation-delay: 1200ms; }
 
         /* Typewriter Cursor */
         .typing-cursor::after {
@@ -292,6 +292,7 @@
         const Wifi = (props) => <IconBase {...props}><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></IconBase>;
         const Moon = (props) => <IconBase {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></IconBase>;
         const Sun = (props) => <IconBase {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></IconBase>;
+        const Code = (props) => <IconBase {...props}><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></IconBase>;
 
 
         /**
@@ -697,7 +698,7 @@
                 </div>
 
                 <div className={`flex flex-wrap justify-center gap-2 mb-12 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 w-fit mx-auto ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'} animate-entry delay-500`}>
-                    {['about', 'skills', 'tools'].map((tab) => (
+                    {['about', 'skills', 'tools', 'projects'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -761,7 +762,7 @@
                           </ul>
                         </div>
 
-                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 animate-tab-enter ${containerBg}`} style={{ animationDelay: '0.15s' }}>
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 animate-tab-enter ${containerBg}`} style={{ animationDelay: '0.3s' }}>
                           <SectionTitle icon={Cloud} title="Core Interests" theme={theme} />
                           <div className="grid gap-3">
                             {[
@@ -807,6 +808,55 @@
                             Always learning new tools. The most important tool is the mindset, but having the right scripts helps.
                           </p>
                         </div>
+                      </div>
+                    )}
+
+                    {activeTab === 'projects' && (
+                      <div key="projects" className={`backdrop-blur-md border p-8 rounded-2xl animate-tab-enter theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
+                        <SectionTitle icon={Code} title="Featured Projects" theme={theme} />
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Project 1 */}
+                            <div className={`p-6 rounded-xl border transition-all duration-300 group hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:-translate-y-1 relative overflow-hidden ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-500 hover:bg-green-50' : 'bg-black/40 border-gray-800 hover:border-green-500 hover:bg-green-900/10'}`}>
+                                <div className="flex justify-between items-start mb-4">
+                                    <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>Zen Desktop Organizer</h3>
+                                    <a href="https://github.com/ishmweet/zen-desktop-organizer" target="_blank" rel="noopener noreferrer" className={`p-2 rounded-full hover:bg-green-500/20 transition-colors ${theme === 'light' ? 'text-gray-500 hover:text-green-600' : 'text-gray-400 hover:text-green-400'}`}>
+                                        <Github size={20} />
+                                    </a>
+                                </div>
+                                <p className={`text-sm mb-4 leading-relaxed ${textSecondary}`}>
+                                    File System Automation tool that declutters the desktop by sorting files into categorized folders based on extensions.
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {['Python', 'Automation', 'OS'].map(tag => (
+                                        <span key={tag} className={`text-xs px-2 py-1 rounded border ${theme === 'light' ? 'bg-white border-gray-200 text-green-700' : 'bg-gray-900 border-gray-700 text-green-400'}`}>
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Project 2 */}
+                            <div className={`p-6 rounded-xl border transition-all duration-300 group hover:shadow-[0_0_20px_rgba(34,197,94,0.2)] hover:-translate-y-1 relative overflow-hidden ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-500 hover:bg-green-50' : 'bg-black/40 border-gray-800 hover:border-green-500 hover:bg-green-900/10'}`}>
+                                <div className="flex justify-between items-start mb-4">
+                                    <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>SpamBot</h3>
+                                    <a href="https://github.com/ishmweet/SpamBot" target="_blank" rel="noopener noreferrer" className={`p-2 rounded-full hover:bg-green-500/20 transition-colors ${theme === 'light' ? 'text-gray-500 hover:text-green-600' : 'text-gray-400 hover:text-green-400'}`}>
+                                        <Github size={20} />
+                                    </a>
+                                </div>
+                                <p className={`text-sm mb-4 leading-relaxed ${textSecondary}`}>
+                                    Python-based Input Simulation Logic script utilizing GUI manipulation libraries to simulate rapid keyboard input.
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {['Python', 'PyAutoGUI', 'Scripting'].map(tag => (
+                                        <span key={tag} className={`text-xs px-2 py-1 rounded border ${theme === 'light' ? 'bg-white border-gray-200 text-green-700' : 'bg-gray-900 border-gray-700 text-green-400'}`}>
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
                       </div>
                     )}
 
