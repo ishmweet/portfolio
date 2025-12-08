@@ -19,6 +19,9 @@
 
     <!-- Global Styles -->
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -351,13 +354,13 @@
 
           const cardBg = theme === 'light' 
             ? 'bg-white/80 border-gray-200 shadow-lg shadow-green-900/5' 
-            : 'bg-gray-900/80 border-gray-700 shadow-2xl shadow-green-900/20';
+            : 'bg-gray-900/80 border-gray-700 shadow-xl shadow-green-900/20';
             
           const inputBg = theme === 'light' ? 'bg-gray-50 border-gray-200 text-green-700' : 'bg-black/50 border-gray-700 text-green-400';
           const buttonHover = theme === 'light' ? 'hover:text-green-700' : 'hover:text-white';
 
           return (
-            <div className={`w-full max-w-md mx-auto backdrop-blur-md border rounded-xl overflow-hidden mt-8 mb-12 transform transition-all hover:scale-[1.02] duration-300 theme-transition ${cardBg}`}>
+            <div className={`w-full max-w-md mx-auto backdrop-blur-md border rounded-xl overflow-hidden mt-8 mb-12 transform transition-all hover:scale-[1.02] hover:shadow-2xl duration-300 theme-transition ${cardBg}`}>
               <div className="bg-gradient-to-r from-green-600 to-emerald-800 p-4 text-center">
                 <h3 className="text-white font-bold text-lg tracking-wider">SECURE GEN</h3>
               </div>
@@ -501,7 +504,7 @@
           // Base classes derived from theme
           const textPrimary = theme === 'light' ? 'text-gray-800' : 'text-gray-300';
           const textSecondary = theme === 'light' ? 'text-gray-600' : 'text-gray-400';
-          const containerBg = theme === 'light' ? 'bg-white/70 border-gray-200 shadow-xl' : 'bg-gray-900/40 border-gray-800 shadow-xl';
+          const containerBg = theme === 'light' ? 'bg-white/70 border-gray-200 shadow-lg' : 'bg-gray-900/40 border-gray-800 shadow-lg';
           const bodyBg = 'bg-transparent'; 
 
           return (
@@ -522,10 +525,10 @@
                     </button>
                 </div>
 
-                {/* Header Profile Section */}
-                <div className="flex flex-col items-center text-center mb-16 animate-fade-in-down">
-                  <div className="relative mb-6 group cursor-pointer animate-float">
-                    <div className={`w-32 h-32 rounded-full border-2 border-green-500 p-1 relative z-10 overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.3)] group-hover:shadow-[0_0_50px_rgba(0,255,65,0.5)] transition-all duration-500 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
+                {/* Header Profile Section - Polished Hero */}
+                <div className="flex flex-col items-center text-center mb-20 animate-fade-in-down">
+                  <div className="relative mb-8 group cursor-pointer animate-float">
+                    <div className={`w-36 h-36 rounded-full border-2 border-green-500 p-1 relative z-10 overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.3)] group-hover:shadow-[0_0_50px_rgba(0,255,65,0.5)] transition-all duration-500 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
                        <img 
                          src="https://avatars.githubusercontent.com/u/96376246?v=4" 
                          alt="Ishmeet Singh" 
@@ -536,36 +539,42 @@
                     <div className="absolute top-0 left-0 w-full h-full rounded-full border border-dashed border-green-500/50 animate-spin-slow scale-110 pointer-events-none"></div>
                   </div>
                   
-                  <h1 className="text-5xl md:text-6xl font-bold mb-2 tracking-tight">
+                  <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
                     <GlitchText text="Ishmeet Singh" theme={theme} />
                   </h1>
                   
-                  <p className={`font-mono text-sm md:text-base mb-6 tracking-widest uppercase ${theme === 'light' ? 'text-green-700' : 'text-green-400'}`}>
-                    <TypewriterText text="Cybersecurity Student" className="font-bold" /> <span className={textSecondary}>|</span> Offensive Security & Cloud Learner
+                  {/* Enhanced Role Subtitle */}
+                  <div className={`text-xl md:text-2xl font-mono mb-4 font-semibold ${theme === 'light' ? 'text-green-700' : 'text-green-400'}`}>
+                     <TypewriterText text="Cybersecurity Student" className="" />
+                  </div>
+
+                  {/* Polished Bio */}
+                  <p className={`max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${textSecondary}`}>
+                    Developing strong cybersecurity fundamentals in Linux, networking, and system behavior through active hands-on learning.
                   </p>
 
                   {/* Social Links */}
-                  <div className="flex gap-6 mb-8">
-                    <a href="https://github.com/ishmweet" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-green-600 hover:scale-110 transition-all duration-300`}><Github size={24} /></a>
-                    <a href="https://www.linkedin.com/in/ishmeet-singh-2a4029378/" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-blue-500 hover:scale-110 transition-all duration-300`}><Linkedin size={24} /></a>
+                  <div className="flex gap-6 mt-8 mb-4">
+                    <a href="https://github.com/ishmweet" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-green-600 hover:scale-125 transition-all duration-300`}><Github size={28} /></a>
+                    <a href="https://www.linkedin.com/in/ishmeet-singh-2a4029378/" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-blue-500 hover:scale-125 transition-all duration-300`}><Linkedin size={28} /></a>
                   </div>
+                </div>
 
-                  {/* Nav Tabs */}
-                  <div className={`flex flex-wrap justify-center gap-2 mb-8 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'}`}>
+                {/* Nav Tabs - Improved Spacing */}
+                <div className={`flex flex-wrap justify-center gap-2 mb-12 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 w-fit mx-auto ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'}`}>
                     {['about', 'skills', 'tools'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 capitalize ${
+                        className={`px-8 py-2 rounded-full text-sm font-medium transition-all duration-300 capitalize ${
                           activeTab === tab 
-                          ? 'bg-green-600 text-white font-bold shadow-lg shadow-green-500/30' 
+                          ? 'bg-green-600 text-white font-bold shadow-lg shadow-green-500/30 transform scale-105' 
                           : `${textSecondary} hover:bg-gray-500/10`
                         }`}
                       >
                         {tab}
                       </button>
                     ))}
-                  </div>
                 </div>
 
                 {/* Main Content Area */}
@@ -575,7 +584,7 @@
                   <div className="md:col-span-2 space-y-8 min-h-[500px]">
                     
                     {activeTab === 'about' && (
-                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition ${containerBg}`}>
+                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                         <SectionTitle icon={Terminal} title="The Origin Story" theme={theme} />
                         <div className={`space-y-6 leading-relaxed ${textPrimary}`}>
                           <p>
@@ -601,7 +610,7 @@
                     {activeTab === 'skills' && (
                       <div className="space-y-6 animate-fade-in">
                         {/* Currently Exploring */}
-                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition ${containerBg}`}>
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                           <SectionTitle icon={Network} title="Currently Exploring" theme={theme} />
                           <ul className="space-y-3">
                             {[
@@ -621,7 +630,7 @@
                         </div>
 
                         {/* Interests */}
-                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition ${containerBg}`}>
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                           <SectionTitle icon={Cloud} title="Core Interests" theme={theme} />
                           <div className="grid gap-3">
                             {[
@@ -631,7 +640,7 @@
                               { text: "Security engineering & tooling", color: "text-purple-500" },
                               { text: "OSINT and operational security", color: "text-green-600" }
                             ].map((item, i) => (
-                              <div key={i} className={`p-3 rounded-lg border flex items-center gap-3 transition-all cursor-pointer hover:shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:-translate-y-1 ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-400' : 'bg-black/40 border-gray-800 hover:border-green-500'}`}>
+                              <div key={i} className={`p-3 rounded-lg border flex items-center gap-3 transition-all cursor-pointer hover:shadow-md hover:-translate-y-1 ${theme === 'light' ? 'bg-gray-50 border-gray-200 hover:border-green-400' : 'bg-black/40 border-gray-800 hover:border-green-500'}`}>
                                 <Shield size={16} className={item.color} />
                                 <span>{item.text}</span>
                               </div>
@@ -642,7 +651,7 @@
                     )}
 
                     {activeTab === 'tools' && (
-                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition ${containerBg}`}>
+                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                         <SectionTitle icon={Cpu} title="Tech Arsenal" theme={theme} />
                         
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -682,7 +691,7 @@
                       </div>
 
                       {/* Quick Contact Card */}
-                      <div className={`p-6 rounded-2xl border shadow-xl theme-transition ${theme === 'light' ? 'bg-gradient-to-br from-white to-gray-50 border-gray-200' : 'bg-gradient-to-br from-gray-900 to-black border-gray-800'}`}>
+                      <div className={`p-6 rounded-2xl border shadow-lg theme-transition hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${theme === 'light' ? 'bg-gradient-to-br from-white to-gray-50 border-gray-200' : 'bg-gradient-to-br from-gray-900 to-black border-gray-800'}`}>
                         <h3 className={`font-bold mb-4 flex items-center gap-2 ${textPrimary}`}>
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                           Status: Online
@@ -698,7 +707,7 @@
                           </div>
                           <button 
                             onClick={() => window.location.href = 'mailto:ishmeet.cybersec@gmail.com'}
-                            className={`w-full mt-2 py-2 border rounded-lg transition-all uppercase text-xs font-bold tracking-widest ${theme === 'light' ? 'border-green-600 text-green-700 hover:bg-green-600 hover:text-white' : 'border-green-600 text-green-500 hover:bg-green-600 hover:text-white'}`}
+                            className={`w-full mt-2 py-2 border rounded-lg transition-all uppercase text-xs font-bold tracking-widest hover:scale-[1.02] active:scale-95 ${theme === 'light' ? 'border-green-600 text-green-700 hover:bg-green-600 hover:text-white' : 'border-green-600 text-green-500 hover:bg-green-600 hover:text-white'}`}
                           >
                             Initiate Contact
                           </button>
