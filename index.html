@@ -28,6 +28,7 @@
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #050505; /* Default Dark Mode */
             transition: background-color 0.5s ease, color 0.5s ease;
+            cursor: default; /* Keep default cursor, we add a glow behind it */
         }
         
         /* Custom Animations */
@@ -47,33 +48,67 @@
         .animate-float {
             animation: float 6s ease-in-out infinite;
         }
-        
-        .animate-fade-in-down {
-          animation: fadeInDown 0.8s ease-out;
+
+        /* Smooth Entrance Animations */
+        @keyframes smoothFadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes smoothScaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-entry {
+            animation: smoothFadeInUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0; /* Start hidden to prevent flash */
         }
         
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s ease-out;
+        .animate-scale-entry {
+            animation: smoothScaleIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0;
+        }
+
+        /* Tab Switching Animation - Smoother & More Viscous */
+        @keyframes tabContentEnter {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
         
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out;
+        .animate-tab-enter {
+            animation: tabContentEnter 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-        
-        @keyframes fadeInDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
+
+        /* Stagger Delays */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+        .delay-700 { animation-delay: 700ms; }
 
         /* Typewriter Cursor */
         .typing-cursor::after {
@@ -117,6 +152,100 @@
             pointer-events: none;
             z-index: -5;
         }
+
+        /* Cyber Range Slider Animation */
+        .cyber-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            outline: none;
+            border-radius: 3px;
+        }
+
+        /* Thumb Styles - Webkit */
+        .cyber-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #22c55e;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            transition: all 0.15s ease-in-out;
+            margin-top: -7px; /* Fix vertical alignment */
+        }
+        /* Track Styles - Webkit */
+        .cyber-slider::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        /* Thumb Styles - Firefox */
+        .cyber-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            background: #22c55e;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+            transition: all 0.15s ease-in-out;
+        }
+
+        /* Active State Animation */
+        .cyber-slider:active::-webkit-slider-thumb {
+            transform: scale(1.3);
+            background: #4ade80;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 1), 0 0 30px rgba(34, 197, 94, 0.6);
+        }
+        .cyber-slider:active::-moz-range-thumb {
+            transform: scale(1.3);
+            background: #4ade80;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 1), 0 0 30px rgba(34, 197, 94, 0.6);
+        }
+
+        /* Glassy Shine Hover Effect */
+        .glass-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* The Shine Element */
+        .glass-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient(
+                120deg, 
+                transparent 20%, 
+                rgba(255, 255, 255, 0.4) 40%, 
+                transparent 60%
+            );
+            transform: skewX(-20deg);
+            pointer-events: none; /* Ensure clicks pass through */
+        }
+        /* Trigger Shine on Hover */
+        .glass-btn:hover::after {
+            left: 100%;
+            transition: left 0.7s ease-in-out;
+        }
+        
+        /* Glassy Active State */
+        .glass-btn-active {
+            background: rgba(22, 163, 74, 0.85) !important; /* Green-600 with opacity */
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -153,7 +282,7 @@
         const Cpu = (props) => <IconBase {...props}><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 14h3"/><path d="M1 9h3"/><path d="M1 14h3"/></IconBase>;
         const Cloud = (props) => <IconBase {...props}><path d="M17.5 19c0-3.037-2.463-5.5-5.5-5.5S6.5 15.963 6.5 19"/><path d="M19 19h.5c1.657 0 3-1.343 3-3 0-2.206-1.794-4-4-4-.3 0-.586.035-.86.105C17.07 9.474 15.225 8 13 8c-3.15 0-5.74 2.41-5.965 5.5C4.265 13.9 2 16.142 2 19h3"/></IconBase>;
         const Lock = (props) => <IconBase {...props}><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></IconBase>;
-        const Eye = (props) => <IconBase {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></IconBase>;
+        const Eye = (props) => <IconBase {...props}><path d="M2 12s3-7 10-7 10 7 10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></IconBase>;
         const EyeOff = (props) => <IconBase {...props}><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></IconBase>;
         const RefreshCw = (props) => <IconBase {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></IconBase>;
         const Copy = (props) => <IconBase {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></IconBase>;
@@ -167,40 +296,40 @@
 
         /**
          * Matrix Rain Canvas Component
-         * Renders the falling code effect in the background, adapts to theme
          */
         const MatrixRain = ({ theme }) => {
           const canvasRef = useRef(null);
+          const mousePos = useRef({ x: 0, y: 0 });
 
           useEffect(() => {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
             
-            // Set canvas size
             const resizeCanvas = () => {
               canvas.width = window.innerWidth;
               canvas.height = window.innerHeight;
             };
             
+            const handleMouseMove = (e) => {
+                mousePos.current = { x: e.clientX, y: e.clientY };
+            };
+
             window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('mousemove', handleMouseMove);
             resizeCanvas();
 
-            // Matrix characters (katakana + latin)
             const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const charArray = chars.split('');
             
             const fontSize = 14;
             const columns = canvas.width / fontSize;
             
-            // Array to track y-coordinate of each column
             const drops = [];
             for (let i = 0; i < columns; i++) {
               drops[i] = 1;
             }
 
             const draw = () => {
-              // Adjust fade for trailing effect based on theme
-              // Light mode needs a slightly cleaner trail to avoid looking muddy
               if (theme === 'light') {
                   ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; 
               } else {
@@ -211,34 +340,49 @@
               
               ctx.font = `${fontSize}px monospace`;
               
+              // 1. Draw standard falling rain
               for (let i = 0; i < drops.length; i++) {
                 const text = charArray[Math.floor(Math.random() * charArray.length)];
                 
-                // Color Logic
                 if (theme === 'light') {
-                    // Light Mode: Black text, Green glint
                     if (Math.random() > 0.98) {
-                        ctx.fillStyle = '#15803d'; // Green Glint
+                        ctx.fillStyle = '#15803d'; 
                     } else {
-                        ctx.fillStyle = '#000000'; // Black text
+                        ctx.fillStyle = '#000000'; 
                     }
                 } else {
-                    // Dark Mode: Bright Green text, White glint
                     if (Math.random() > 0.98) {
-                        ctx.fillStyle = '#FFF'; // Glint
+                        ctx.fillStyle = '#FFF'; 
                     } else {
-                        ctx.fillStyle = '#00FF41'; // Matrix Green
+                        ctx.fillStyle = '#00FF41'; 
                     }
                 }
 
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                 
-                // Reset drop to top randomly
                 if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                   drops[i] = 0;
                 }
                 
                 drops[i]++;
+              }
+
+              // 2. Mouse Intervention Logic
+              const mouseCol = Math.floor(mousePos.current.x / fontSize);
+              const mouseRow = Math.floor(mousePos.current.y / fontSize);
+              
+              for (let i = -1; i <= 1; i++) {
+                  for (let j = -1; j <= 1; j++) {
+                      if (Math.random() > 0.5) { 
+                        const text = charArray[Math.floor(Math.random() * charArray.length)];
+                        
+                        ctx.fillStyle = theme === 'light' 
+                            ? 'rgba(22, 163, 74, 0.8)' 
+                            : 'rgba(255, 255, 255, 0.5)'; 
+                            
+                        ctx.fillText(text, (mouseCol + i) * fontSize, (mouseRow + j) * fontSize);
+                      }
+                  }
               }
             };
 
@@ -246,8 +390,9 @@
             return () => {
               clearInterval(interval);
               window.removeEventListener('resize', resizeCanvas);
+              window.removeEventListener('mousemove', handleMouseMove);
             };
-          }, [theme]); // Re-run effect when theme changes
+          }, [theme]);
 
           return (
             <canvas 
@@ -258,10 +403,6 @@
           );
         };
 
-        /**
-         * Typewriter Text Component
-         * Animates text character by character
-         */
         const TypewriterText = ({ text, className }) => {
             const [displayText, setDisplayText] = useState('');
             const [currentIndex, setCurrentIndex] = useState(0);
@@ -271,7 +412,7 @@
                     const timeout = setTimeout(() => {
                         setDisplayText(prev => prev + text[currentIndex]);
                         setCurrentIndex(prev => prev + 1);
-                    }, 50); // Speed of typing
+                    }, 50); 
                     return () => clearTimeout(timeout);
                 }
             }, [currentIndex, text]);
@@ -279,10 +420,6 @@
             return <span className={`${className} typing-cursor`}>{displayText}</span>;
         };
 
-        /**
-         * Glitch Text Component
-         * Creates a cyberpunk text glitch effect on hover/load
-         */
         const GlitchText = ({ text, theme }) => {
           return (
             <div className="relative inline-block group">
@@ -297,10 +434,6 @@
           );
         };
 
-        /**
-         * Password Generator Tool
-         * Replicates the functional tool from the design image
-         */
         const PasswordGenerator = ({ theme }) => {
           const [password, setPassword] = useState('');
           const [length, setLength] = useState(16);
@@ -310,11 +443,10 @@
           const [showPassword, setShowPassword] = useState(true);
           const [strength, setStrength] = useState({ text: 'Strong', color: 'text-green-500' });
 
-          // Dynamic Strength Calculation
           useEffect(() => {
              let score = 0;
              if (password.length >= 12) score++;
-             if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++; // Mixed case
+             if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
              if (/[0-9]/.test(password)) score++;
              if (/[^A-Za-z0-9]/.test(password)) score++;
              
@@ -376,8 +508,20 @@
                       type={showPassword ? "text" : "password"}
                       value={password}
                       readOnly
-                      className={`w-full border font-mono text-lg p-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors ${inputBg}`}
+                      className={`w-full border font-mono text-lg p-3 pr-24 rounded-lg focus:outline-none focus:border-green-500 transition-colors ${inputBg}`}
                     />
+                    
+                    <div 
+                        className="absolute top-2 bottom-2 right-24 w-16 pointer-events-none"
+                        style={{
+                            background: `linear-gradient(to right, transparent, ${theme === 'light' ? '#f9fafb' : 'rgba(0,0,0,0.8)'})`,
+                            backdropFilter: 'blur(3px)',
+                            WebkitBackdropFilter: 'blur(3px)',
+                            maskImage: 'linear-gradient(to right, transparent, black)',
+                            WebkitMaskImage: 'linear-gradient(to right, transparent, black)'
+                        }}
+                    />
+
                     <button 
                       onClick={() => setShowPassword(!showPassword)}
                       className={`absolute right-12 top-1/2 -translate-y-1/2 text-gray-400 transition-colors ${buttonHover}`}
@@ -405,7 +549,10 @@
                     max="32" 
                     value={length} 
                     onChange={(e) => setLength(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+                    className="cyber-slider w-full cursor-pointer mt-2"
+                    style={{
+                        background: `linear-gradient(to right, ${theme === 'light' ? '#16a34a' : '#22c55e'} ${((length - 8) / (32 - 8)) * 100}%, ${theme === 'light' ? '#e5e7eb' : '#374151'} ${((length - 8) / (32 - 8)) * 100}%)`
+                    }}
                   />
                   
                   <div className="flex justify-between gap-4">
@@ -460,12 +607,10 @@
             setTheme(prev => prev === 'dark' ? 'light' : 'dark');
           };
 
-          // Update body background color when theme changes
           useEffect(() => {
             document.body.style.backgroundColor = theme === 'light' ? '#f3f4f6' : '#050505';
           }, [theme]);
 
-          // Set Circular Favicon Logic
           useEffect(() => {
             const setCircularFavicon = (imageUrl) => {
               const canvas = document.createElement('canvas');
@@ -473,7 +618,7 @@
               canvas.height = 64;
               const ctx = canvas.getContext('2d');
               const img = new Image();
-              img.crossOrigin = "Anonymous"; // Crucial for CORS images
+              img.crossOrigin = "Anonymous"; 
               img.src = imageUrl;
               img.onload = () => {
                 ctx.beginPath();
@@ -482,13 +627,11 @@
                 ctx.clip();
                 ctx.drawImage(img, 0, 0, 64, 64);
                 
-                // Remove existing icon
                 const existingLink = document.querySelector("link[rel*='icon']");
                 if (existingLink) {
                     document.head.removeChild(existingLink);
                 }
 
-                // Add new circular icon
                 const link = document.createElement('link');
                 link.type = 'image/x-icon';
                 link.rel = 'icon';
@@ -497,11 +640,9 @@
               };
             };
             
-            // Call the function with your image URL
             setCircularFavicon("https://avatars.githubusercontent.com/u/96376246?v=4");
           }, []);
 
-          // Base classes derived from theme
           const textPrimary = theme === 'light' ? 'text-gray-800' : 'text-gray-300';
           const textSecondary = theme === 'light' ? 'text-gray-600' : 'text-gray-400';
           const containerBg = theme === 'light' ? 'bg-white/70 border-gray-200 shadow-lg' : 'bg-gray-900/40 border-gray-800 shadow-lg';
@@ -510,12 +651,12 @@
           return (
             <div className={`min-h-screen font-sans selection:bg-green-500 selection:text-white overflow-x-hidden theme-transition ${bodyBg} ${textPrimary}`}>
               <div className="vignette"></div>
+              
               <MatrixRain theme={theme} />
               
               <div className="relative z-10 container mx-auto px-4 py-12 max-w-5xl">
                 
-                {/* Theme Toggle Button */}
-                <div className="absolute top-6 right-6 z-50">
+                <div className="absolute top-6 right-6 z-50 animate-entry delay-700">
                     <button 
                         onClick={toggleTheme}
                         className={`p-2 rounded-full border transition-all duration-300 ${theme === 'light' ? 'bg-white border-gray-200 text-orange-500 shadow-md' : 'bg-gray-800 border-gray-700 text-yellow-400 shadow-lg'}`}
@@ -525,9 +666,8 @@
                     </button>
                 </div>
 
-                {/* Header Profile Section - Polished Hero */}
-                <div className="flex flex-col items-center text-center mb-20 animate-fade-in-down">
-                  <div className="relative mb-8 group cursor-pointer animate-float">
+                <div className="flex flex-col items-center text-center mb-20 animate-entry">
+                  <div className="relative mb-8 group cursor-pointer animate-scale-entry">
                     <div className={`w-36 h-36 rounded-full border-2 border-green-500 p-1 relative z-10 overflow-hidden shadow-[0_0_30px_rgba(0,255,65,0.3)] group-hover:shadow-[0_0_50px_rgba(0,255,65,0.5)] transition-all duration-500 ${theme === 'light' ? 'bg-white' : 'bg-black'}`}>
                        <img 
                          src="https://avatars.githubusercontent.com/u/96376246?v=4" 
@@ -535,41 +675,36 @@
                          className="w-full h-full object-cover rounded-full"
                        />
                     </div>
-                    {/* Spinning ring effect */}
                     <div className="absolute top-0 left-0 w-full h-full rounded-full border border-dashed border-green-500/50 animate-spin-slow scale-110 pointer-events-none"></div>
                   </div>
                   
-                  <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">
+                  <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight animate-entry delay-100">
                     <GlitchText text="Ishmeet Singh" theme={theme} />
                   </h1>
                   
-                  {/* Enhanced Role Subtitle */}
-                  <div className={`text-xl md:text-2xl font-mono mb-4 font-semibold ${theme === 'light' ? 'text-green-700' : 'text-green-400'}`}>
+                  <div className={`text-xl md:text-2xl font-mono mb-4 font-semibold ${theme === 'light' ? 'text-green-700' : 'text-green-400'} animate-entry delay-200`}>
                      <TypewriterText text="Cybersecurity Student" className="" />
                   </div>
 
-                  {/* Polished Bio */}
-                  <p className={`max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${textSecondary}`}>
+                  <p className={`max-w-2xl mx-auto text-base md:text-lg leading-relaxed ${textSecondary} animate-entry delay-300`}>
                     Developing strong cybersecurity fundamentals in Linux, networking, and system behavior through active hands-on learning.
                   </p>
 
-                  {/* Social Links */}
-                  <div className="flex gap-6 mt-8 mb-4">
+                  <div className="flex gap-6 mt-8 mb-4 animate-entry delay-400">
                     <a href="https://github.com/ishmweet" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-green-600 hover:scale-125 transition-all duration-300`}><Github size={28} /></a>
                     <a href="https://www.linkedin.com/in/ishmeet-singh-2a4029378/" target="_blank" rel="noopener noreferrer" className={`${textSecondary} hover:text-blue-500 hover:scale-125 transition-all duration-300`}><Linkedin size={28} /></a>
                   </div>
                 </div>
 
-                {/* Nav Tabs - Improved Spacing */}
-                <div className={`flex flex-wrap justify-center gap-2 mb-12 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 w-fit mx-auto ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'}`}>
+                <div className={`flex flex-wrap justify-center gap-2 mb-12 p-2 rounded-full backdrop-blur-sm border transition-colors duration-300 w-fit mx-auto ${theme === 'light' ? 'bg-white/60 border-gray-200' : 'bg-gray-900/50 border-gray-800'} animate-entry delay-500`}>
                     {['about', 'skills', 'tools'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-8 py-2 rounded-full text-sm font-medium transition-all duration-300 capitalize ${
+                        className={`px-8 py-2 rounded-full text-sm font-medium capitalize glass-btn ${
                           activeTab === tab 
-                          ? 'bg-green-600 text-white font-bold shadow-lg shadow-green-500/30 transform scale-105' 
-                          : `${textSecondary} hover:bg-gray-500/10`
+                          ? 'glass-btn-active text-white font-bold transform scale-105' 
+                          : `${textSecondary} hover:bg-gray-500/10 hover:text-green-500`
                         }`}
                       >
                         {tab}
@@ -577,14 +712,12 @@
                     ))}
                 </div>
 
-                {/* Main Content Area */}
                 <div className="grid md:grid-cols-3 gap-8 items-start">
                   
-                  {/* Left Column: Dynamic Content based on tabs */}
-                  <div className="md:col-span-2 space-y-8 min-h-[500px]">
+                  <div className="md:col-span-2 space-y-8 min-h-[500px] animate-entry delay-500">
                     
                     {activeTab === 'about' && (
-                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
+                      <div key="about" className={`backdrop-blur-md border p-8 rounded-2xl animate-tab-enter theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                         <SectionTitle icon={Terminal} title="The Origin Story" theme={theme} />
                         <div className={`space-y-6 leading-relaxed ${textPrimary}`}>
                           <p>
@@ -608,9 +741,8 @@
                     )}
 
                     {activeTab === 'skills' && (
-                      <div className="space-y-6 animate-fade-in">
-                        {/* Currently Exploring */}
-                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
+                      <div key="skills" className="space-y-6">
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 animate-tab-enter ${containerBg}`}>
                           <SectionTitle icon={Network} title="Currently Exploring" theme={theme} />
                           <ul className="space-y-3">
                             {[
@@ -629,8 +761,7 @@
                           </ul>
                         </div>
 
-                        {/* Interests */}
-                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
+                        <div className={`backdrop-blur-md border p-6 rounded-2xl theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 animate-tab-enter ${containerBg}`} style={{ animationDelay: '0.15s' }}>
                           <SectionTitle icon={Cloud} title="Core Interests" theme={theme} />
                           <div className="grid gap-3">
                             {[
@@ -651,7 +782,7 @@
                     )}
 
                     {activeTab === 'tools' && (
-                      <div className={`backdrop-blur-md border p-8 rounded-2xl animate-fade-in theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
+                      <div key="tools" className={`backdrop-blur-md border p-8 rounded-2xl animate-tab-enter theme-transition hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 ${containerBg}`}>
                         <SectionTitle icon={Cpu} title="Tech Arsenal" theme={theme} />
                         
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -681,16 +812,13 @@
 
                   </div>
 
-                  {/* Right Column: Sticky Sidebar with Tools */}
-                  <div className="md:col-span-1">
+                  <div className="md:col-span-1 animate-entry delay-700">
                     <div className="sticky top-8 space-y-6">
                       
-                      {/* Featured Project / Tool */}
-                      <div className="animate-fade-in-up delay-100">
+                      <div>
                         <PasswordGenerator theme={theme} />
                       </div>
 
-                      {/* Quick Contact Card */}
                       <div className={`p-6 rounded-2xl border shadow-lg theme-transition hover:-translate-y-1 hover:shadow-xl transition-all duration-300 ${theme === 'light' ? 'bg-gradient-to-br from-white to-gray-50 border-gray-200' : 'bg-gradient-to-br from-gray-900 to-black border-gray-800'}`}>
                         <h3 className={`font-bold mb-4 flex items-center gap-2 ${textPrimary}`}>
                           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -719,8 +847,7 @@
 
                 </div>
 
-                {/* Footer */}
-                <footer className={`mt-20 text-center text-sm border-t pt-8 theme-transition ${theme === 'light' ? 'text-gray-500 border-gray-200' : 'text-gray-600 border-gray-900'}`}>
+                <footer className={`mt-20 text-center text-sm border-t pt-8 theme-transition ${theme === 'light' ? 'text-gray-500 border-gray-200' : 'text-gray-600 border-gray-900'} animate-entry delay-700`}>
                   <p>© {new Date().getFullYear()} Ishmeet. All systems operational.</p>
                 </footer>
 
@@ -734,4 +861,3 @@
     </script>
 </body>
 </html>
-
